@@ -32,14 +32,22 @@ usuariosCtrl.getUnicUsuarios = async (req, res) => {
 
 usuariosCtrl.editaUsuarios = async (req, res) => { // * PUT: actualizar usuario
     const { id } = req.params;
+    const { nombre, email, password } = req.body;
 
     const usuarioEdit = {
-        name: req.body.name,
-        email: req.body.email
+        nombre,
+        email
     };
 
-    await Usuario.findByIdAndUpdate(id, usuarioEdit); // mongoose method
-    res.json({ status: 'Usuario actualizado' }); // ? respuesta
+    // Si enviaron contraseña, encriptarla
+    if (password) {
+        const salt = await bcrypt.genSalt(10);
+        usuarioEdit.password = await bcrypt.hash(password, salt);
+    }
+
+    const usuarioActualizado = await Usuario.findByIdAndUpdate(id, usuarioEdit, { new: true });
+    
+    res.json({ status: 'Usuario actualizado', usuario: usuarioActualizado });
 };
 
 usuariosCtrl.eliminaUsuarios = async (req, res) => { // * DELETE: eliminar usuario
