@@ -9,20 +9,20 @@ usuariosCtrl.getUsuarios = async (req, res) => { // * GET: obtener todos los usu
 };
 
 usuariosCtrl.createUsuarios = async (req, res) => { // * POST: crear usuario
-    const { name, email, password } = req.body; // payload API
+    const { nombre, email, password } = req.body; 
 
     const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(password, salt); // contraseña encriptada
+    const passwordHash = await bcrypt.hash(password, salt);
 
-    const usuario = new Usuario({ // herencia usuario
-        name,
+    const usuario = new Usuario({
+        nombre, 
         email,
         password: passwordHash
     });
 
     await usuario.save();
 
-    res.json({ status: 'Usuario guardado' }); // ? respuesta
+    res.json({ status: 'Usuario guardado' });
 };
 
 usuariosCtrl.getUnicUsuarios = async (req, res) => {
